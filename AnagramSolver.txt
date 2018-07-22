@@ -1,0 +1,76 @@
+function main(){
+    var dict = getDictionary(),
+        map = createMap(dict),
+        phrase = 'taY ratu dleeone'.replace(/\s/g,'').toLowerCase();
+    
+    dictScores = Object.keys(map)
+    console.log(matchPhrase(map, getLexScore(phrase)))
+    
+}
+
+function matchPhrase(map, phraseLexicalScore){
+    if(phraseLexicalScore == 1)
+        return true;
+    let out = [];
+    //var dictScores = Object.keys(map)
+    for(var i=0;i<dictScores.length; i++){
+        var score = dictScores[i]
+        if(score > phraseLexicalScore)
+            return false;
+        if(phraseLexicalScore % score == 0){
+            console.log(phraseLexicalScore, map[score]);
+            var phraseMatched = matchPhrase(map, phraseLexicalScore / score);
+            if(phraseMatched)
+                out.push( [map[score], phraseMatched]);
+        }
+    }
+    return (out.length && out);
+}
+
+function createMap(words){
+    var map = {};
+    words.filter(w => !/.*'s.*/.test(w) && w.length > 1).forEach((word, index) => {
+        if(true){
+            var lexScore = this.getLexScore(word)
+            if(!map[lexScore])
+                map[lexScore] = []
+            map[lexScore].push(word) 
+        }
+    })
+    return map;
+}
+
+function getLexScore(word){
+
+    var letterMap = {
+        e: 2,
+        a: 3,
+        i: 5,
+        o: 7,
+        t: 11,
+        n: 13,
+        s: 17,
+        r: 19,
+        h: 23,
+        d: 29,
+        l: 31,
+        u: 37,
+        c: 41,
+        m: 43,
+        f: 47,
+        y: 53,
+        w: 59,
+        g: 61,
+        p: 67,
+        b: 71,
+        v: 73,
+        k: 79,
+        x: 83,
+        q: 89,
+        j: 97,
+		z: 101
+    };
+    return word.split('').reduce((acc, c)=>acc * letterMap[c], 1)
+}
+
+main();
